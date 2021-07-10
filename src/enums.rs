@@ -115,20 +115,9 @@ impl std::fmt::Display for PamReturnCode {
     }
 }
 
-/// The Linux-PAM flags
+/// PAM flags for pam_setcred
 #[pam_enum]
-pub enum PamFlag {
-    /// Default value, if no specific flags should be passed
-    None = 0,
-
-    /// Authentication service should not generate any messages
-    Silent,
-
-    /// The authentication service should return AUTH_ERROR
-    /// if the user has a null authentication token
-    /// (used by pam_authenticate{,_secondary}())
-    Disallow_Null_AuthTok,
-
+pub enum PamSetCredFlag {
     /// Set user credentials for an authentication service
     /// (used for pam_setcred())
     Establish_Cred,
@@ -144,6 +133,45 @@ pub enum PamFlag {
     /// Extend lifetime of user credentials
     /// (used for pam_setcred())
     Refresh_Cred,
+}
+
+impl std::fmt::Display for PamSetCredFlag {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
+}
+
+/// PAM flags for pam_authenticate
+#[pam_enum]
+pub enum PamAuthenticateFlag {
+    /// Default value, if no specific flags should be passed
+    None = 0,
+
+    /// The authentication service should return AUTH_ERROR
+    /// if the user has a null authentication token
+    /// (used by pam_authenticate{,_secondary}())
+    Disallow_Null_AuthTok,
+}
+
+impl std::fmt::Display for PamAuthenticateFlag {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
+}
+
+/// PAM flags for pam_ch_authtok and pam_sm_chauthtok
+#[pam_enum]
+pub enum PamAuthTokFlag {
+    /// Default value, if no specific flags should be passed
+    None = 0,
+
+    /// The following two flags are for use across the Linux-PAM/module
+    /// interface only. The Application is not permitted to use these
+    /// tokens.
+    ///
+    /// The password service should only perform preliminary checks.  No
+    /// passwords should be updated.
+    Prelim_Check,
 
     /// The password service should only update those passwords that have aged.
     /// If this flag is not passed, the password service should update all passwords.
@@ -153,14 +181,22 @@ pub enum PamFlag {
     /// The password service should update passwords Note: PAM_PRELIM_CHECK
     /// and PAM_UPDATE_AUTHTOK cannot both be set simultaneously!
     Update_AuthTok,
+}
 
-    /// The following two flags are for use across the Linux-PAM/module
-    /// interface only. The Application is not permitted to use these
-    /// tokens.
-    ///
-    /// The password service should only perform preliminary checks.  No
-    /// passwords should be updated.
-    Prelim_Check,
+impl std::fmt::Display for PamAuthTokFlag {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        f.write_str(&format!("{:?} ({})", self, *self as i32))
+    }
+}
+
+/// The general PAM flags
+#[pam_enum]
+pub enum PamFlag {
+    /// Default value, if no specific flags should be passed
+    None = 0,
+
+    /// Authentication service should not generate any messages
+    Silent,
 }
 
 impl std::fmt::Display for PamFlag {

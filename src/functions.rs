@@ -16,7 +16,7 @@ pub use misc::*;
 /* ------------------------ <security/pam_appl.h> -------------------------- */
 #[cfg(feature = "client")]
 mod appl {
-    use crate::{PamFlag, PamHandle, PamResult, PamReturnCode};
+    use crate::{PamFlag, PamHandle, PamResult, PamReturnCode, PamSetCredFlag};
     use libc::c_int;
     use pam_sys as ffi;
     use std::ffi::CString;
@@ -79,7 +79,7 @@ mod appl {
     ///
     /// Valid `PamFlag`s: Silent, {Establish,Delete,Reinitialize,Refresh}_Cred
     #[inline]
-    pub fn setcred(handle: &mut PamHandle, flags: PamFlag) -> PamReturnCode {
+    pub fn setcred(handle: &mut PamHandle, flags: PamSetCredFlag) -> PamReturnCode {
         unsafe { ffi::pam_setcred(handle, flags as c_int) }.into()
     }
 

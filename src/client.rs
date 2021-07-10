@@ -99,7 +99,7 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
             return Err(PamReturnCode::Perm_Denied.into());
         }
 
-        self.last_code = setcred(self.handle, PamFlag::Establish_Cred);
+        self.last_code = setcred(self.handle, PamSetCredFlag::Establish_Cred);
         if self.last_code != PamReturnCode::Success {
             return self.reset();
         }
@@ -110,7 +110,7 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
         }
 
         // Follow openSSH and call pam_setcred before and after open_session
-        self.last_code = setcred(self.handle, PamFlag::Reinitialize_Cred);
+        self.last_code = setcred(self.handle, PamSetCredFlag::Reinitialize_Cred);
         if self.last_code != PamReturnCode::Success {
             return self.reset();
         }
@@ -168,7 +168,7 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
 
     // Utility function to reset the pam handle in case of intermediate errors
     fn reset(&mut self) -> PamResult<()> {
-        setcred(self.handle, PamFlag::Delete_Cred);
+        setcred(self.handle, PamSetCredFlag::Delete_Cred);
         self.is_authenticated = false;
         Err(From::from(self.last_code))
     }
@@ -179,7 +179,7 @@ impl<'a, C: conv::Conversation> Drop for Client<'a, C> {
         if self.has_open_session && self.close_on_drop {
             close_session(self.handle, false);
         }
-        let code = setcred(self.handle, PamFlag::Delete_Cred);
+        let code = setcred(self.handle, PamSetCredFlag::Delete_Cred);
         end(self.handle, code);
     }
 }
